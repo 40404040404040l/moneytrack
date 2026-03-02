@@ -8,15 +8,33 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy import case, func, text
 from sqlalchemy.orm import Session
 
-from . import auth, models, schemas
-from .database import Base, SessionLocal, engine
-
 # Load environment variables
 env_path = Path(__file__).parent / ".env"
 load_dotenv(env_path)
 
+from . import auth, models, schemas
+from .database import Base, SessionLocal, engine
+
 Base.metadata.create_all(bind=engine)
 app = FastAPI(title="MoneyTrack API")
+
+DEFAULT_CATEGORIES = [
+    "Продукты",
+    "Рестораны",
+    "Транспорт",
+    "Авто",
+    "Квартира",
+    "Коммунальные услуги",
+    "Интернет и связь",
+    "Здоровье",
+    "Красота",
+    "Одежда",
+    "Развлечения",
+    "Путешествия",
+    "Образование",
+    "Подарки",
+    "Зарплата",
+]
 
 
 def run_dev_migrations() -> None:
@@ -125,6 +143,12 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
         hashed_password=auth.get_password_hash(user.password),
     )
     db.add(new_user)
+    db.flush()
+
+    db.add_all(
+        [models.Category(name=name, owner_id=new_user.id) for name in DEFAULT_CATEGORIES]
+    )
+
     db.commit()
     db.refresh(new_user)
     return new_user
@@ -176,6 +200,39 @@ def create_category(
     db.commit()
     db.refresh(db_category)
     return db_category
+
+
+@app.delete("/categories/{category_id}")
+def delete_category(
+    category_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    category = (
+        db.query(models.Category)
+        .filter(models.Category.id == category_id)
+        .filter(models.Category.owner_id == current_user.id)
+        .first()
+    )
+    if category is None:
+        raise HTTPException(status_code=404, detail="Category not found")
+
+    (
+        db.query(models.Transaction)
+        .filter(models.Transaction.owner_id == current_user.id)
+        .filter(models.Transaction.category_id == category_id)
+        .update(
+            {
+                models.Transaction.category_id: None,
+                models.Transaction.category_legacy: category.name,
+            },
+            synchronize_session=False,
+        )
+    )
+
+    db.delete(category)
+    db.commit()
+    return {"status": "ok"}
 
 
 @app.get("/transactions", response_model=list[schemas.TransactionResponse])

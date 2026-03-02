@@ -12,8 +12,9 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="brand-block">
-        <p className="brand-eyebrow">Finance OS</p>
+        <p className="brand-eyebrow">Personal Finance</p>
         <h2>MoneyTrack</h2>
+        <p className="brand-copy">Смелый минимализм для ежедневного контроля денег.</p>
       </div>
 
       <nav className="menu">
@@ -30,6 +31,11 @@ export default function Sidebar() {
           </NavLink>
         ))}
       </nav>
+
+      <div className="sidebar-foot">
+        <p className="sidebar-foot-label">Today Focus</p>
+        <p>Добавь хотя бы 1 доход или расход, чтобы видеть живую динамику.</p>
+      </div>
     </aside>
   );
 }

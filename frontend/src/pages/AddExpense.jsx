@@ -31,59 +31,67 @@ export default function AddExpense() {
   };
 
   return (
-    <section className="card form-card">
-      <h2>Добавить расход</h2>
-      <form className="form-grid" onSubmit={handleSubmit}>
-        <label>
-          Сумма
-          <input
-            type="number"
-            step="0.01"
-            min="0"
-            required
-            value={form.amount}
-            onChange={(e) => setForm((prev) => ({ ...prev, amount: e.target.value }))}
-          />
-        </label>
+    <div className="page-stack">
+      <section className="hero-panel card">
+        <p className="hero-kicker">Cash Out</p>
+        <h2 className="hero-title">Добавь расход точно</h2>
+        <p className="hero-copy">Фиксируй траты сразу, чтобы аналитика расходов не искажалась.</p>
+      </section>
 
-        <label>
-          Категория
-          <select
-            value={form.category_id}
-            onChange={(e) => setForm((prev) => ({ ...prev, category_id: e.target.value }))}
-          >
-            <option value="">Без категории</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </label>
+      <section className="card form-card">
+        <h2>Новая запись расхода</h2>
+        <form className="form-grid" onSubmit={handleSubmit}>
+          <label>
+            Сумма
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              required
+              value={form.amount}
+              onChange={(e) => setForm((prev) => ({ ...prev, amount: e.target.value }))}
+            />
+          </label>
 
-        <label>
-          Дата
-          <input
-            type="date"
-            required
-            value={form.tx_date}
-            onChange={(e) => setForm((prev) => ({ ...prev, tx_date: e.target.value }))}
-          />
-        </label>
+          <label>
+            Категория
+            <select
+              value={form.category_id}
+              onChange={(e) => setForm((prev) => ({ ...prev, category_id: e.target.value }))}
+            >
+              <option value="">Без категории</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </label>
 
-        <label className="wide">
-          Описание
-          <input
-            value={form.description}
-            onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
-            placeholder="Например, продукты или транспорт"
-          />
-        </label>
+          <label>
+            Дата
+            <input
+              type="date"
+              required
+              value={form.tx_date}
+              onChange={(e) => setForm((prev) => ({ ...prev, tx_date: e.target.value }))}
+            />
+          </label>
 
-        <button className="btn btn-primary wide">Сохранить расход</button>
-      </form>
+          <label className="wide">
+            Описание
+            <input
+              value={form.description}
+              onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
+              placeholder="Например, продукты или транспорт"
+            />
+          </label>
 
-      {status && <p className="status-text">{status}</p>}
-    </section>
+          <button className="btn btn-primary wide">Сохранить расход</button>
+        </form>
+
+        {status && <p className="status-text">{status}</p>}
+      </section>
+    </div>
   );
 }

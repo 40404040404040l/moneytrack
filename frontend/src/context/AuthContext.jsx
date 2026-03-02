@@ -3,6 +3,7 @@ import {
   addExpense,
   addIncome,
   createCategory,
+  deleteCategory,
   getAnalytics,
   getCategories,
   getTransactions,
@@ -56,6 +57,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (payload) => {
     await registerRequest(payload);
+    await login(payload);
   };
 
   const logout = () => {
@@ -89,6 +91,11 @@ export const AuthProvider = ({ children }) => {
 
   const createNewCategory = async (name) => {
     await createCategory({ name });
+    return refreshCategories();
+  };
+
+  const removeCategory = async (id) => {
+    await deleteCategory(id);
     return refreshCategories();
   };
 
@@ -128,6 +135,7 @@ export const AuthProvider = ({ children }) => {
         refreshCategories,
         refreshSummary,
         createNewCategory,
+        removeCategory,
         createIncome,
         createExpense,
       }}
