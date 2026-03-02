@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const formatMoney = (value) => Number(value || 0).toFixed(2);
@@ -9,8 +10,22 @@ export default function Dashboard() {
   const recent = useMemo(() => transactions.slice(0, 10), [transactions]);
 
   return (
-    <div className="page-stack">
-      <section className="card-grid stats-grid">
+    <div className="page-stack dashboard-page">
+      <section className="hero-panel card">
+        <p className="hero-kicker">Daily Pulse</p>
+        <h2 className="hero-title">Твой фин. фокус на сегодня</h2>
+        <p className="hero-copy">Добавляй операции сразу, чтобы баланс и аналитика всегда оставались живыми.</p>
+        <div className="hero-actions">
+          <Link className="btn btn-primary" to="/add-income">
+            + Доход
+          </Link>
+          <Link className="btn btn-ghost" to="/add-expense">
+            + Расход
+          </Link>
+        </div>
+      </section>
+
+      <section className="card-grid stats-grid bento-stats">
         <article className="card stat income">
           <p>Доход</p>
           <h3>{formatMoney(summary.income)}</h3>
@@ -25,7 +40,7 @@ export default function Dashboard() {
         </article>
       </section>
 
-      <section className="card">
+      <section className="card transactions-card">
         <div className="section-header">
           <div>
             <h2>Последние транзакции</h2>

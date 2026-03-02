@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
 export default function Categories() {
-  const { categories, createNewCategory } = useAuth();
+  const { categories, createNewCategory, removeCategory } = useAuth();
   const [name, setName] = useState("");
   const [status, setStatus] = useState("");
 
@@ -20,8 +20,23 @@ export default function Categories() {
     }
   };
 
+  const handleDelete = async (id) => {
+    try {
+      await removeCategory(id);
+      setStatus("Категория удалена");
+    } catch {
+      setStatus("Не удалось удалить категорию");
+    }
+  };
+
   return (
     <div className="page-stack">
+      <section className="hero-panel card">
+        <p className="hero-kicker">Taxonomy</p>
+        <h2 className="hero-title">Собери свою систему категорий</h2>
+        <p className="hero-copy">Категории задают порядок в аналитике. Оставь только те, что реально используешь.</p>
+      </section>
+
       <section className="card form-card">
         <h2>Категории</h2>
         <form className="inline-form" onSubmit={handleCreate}>
@@ -42,6 +57,13 @@ export default function Categories() {
           {categories.map((c) => (
             <span key={c.id} className="category-tag">
               {c.name}
+              <button
+                type="button"
+                className="btn-link danger"
+                onClick={() => handleDelete(c.id)}
+              >
+                удалить
+              </button>
             </span>
           ))}
         </div>

@@ -36,7 +36,13 @@ export default function Analytics() {
   );
 
   return (
-    <div className="page-stack">
+    <div className="page-stack analytics-page">
+      <section className="hero-panel card">
+        <p className="hero-kicker">Insights</p>
+        <h2 className="hero-title">Разложим деньги по слоям</h2>
+        <p className="hero-copy">Смотри, где концентрируются расходы и как меняется динамика каждый день.</p>
+      </section>
+
       <section className="card">
         <div className="section-header">
           <h2>Аналитика</h2>
@@ -65,7 +71,7 @@ export default function Analytics() {
         </div>
       </section>
 
-      <section className="card">
+      <section className="card analytics-split">
         <h3>Расходы по категориям</h3>
         <div className="bars">
           {categoryStats.length === 0 && <p>Нет данных за выбранный период</p>}

@@ -21,9 +21,20 @@ export default function RegisterForm() {
     setSubmitting(true);
     try {
       await register(form);
-      navigate("/login");
-    } catch {
-      setError("Пользователь с таким логином уже существует");
+      navigate("/");
+    } catch (err) {
+      const status = err?.response?.status;
+      const detail = err?.response?.data?.detail;
+
+      if (status === 400 && detail === "Username already registered") {
+        setError("Пользователь с таким логином уже существует");
+      } else if (status === 422) {
+        setError("Проверь введенные данные");
+      } else if (!err?.response) {
+        setError("Нет соединения с сервером");
+      } else {
+        setError(typeof detail === "string" ? detail : "Не удалось зарегистрироваться");
+      }
     } finally {
       setSubmitting(false);
     }

@@ -28,6 +28,7 @@ export const registerRequest = (data) => api.post("/register", data);
 
 export const getCategories = () => api.get("/categories");
 export const createCategory = (data) => api.post("/categories", data);
+export const deleteCategory = (id) => api.delete(`/categories/${id}`);
 
 export const getTransactions = (params) => api.get("/transactions", { params });
 export const createTransaction = (data) => api.post("/transactions", data);
