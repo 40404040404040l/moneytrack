@@ -1,184 +1,199 @@
-# MoneyTrack 💰
+# MoneyTrack
 
-**MoneyTrack** — это приложение для учёта личных финансов. Позволяет отслеживать доходы и расходы, анализировать траты по категориям и просматривать статистику.
+**MoneyTrack** — full-stack приложение для учета личных финансов. Оно помогает фиксировать доходы и расходы, распределять операции по категориям и смотреть аналитику за выбранный период.
 
-## 📋 Возможности
+Проект состоит из React frontend, FastAPI backend и PostgreSQL. Его можно запускать целиком через Docker Compose или отдельно поднимать frontend/backend для разработки.
 
-- ✅ Регистрация и авторизация пользователей
-- ✅ Управление категориями расходов/доходов
-- ✅ Добавление доходов и расходов
-- ✅ Фильтрация транзакций по периодам (неделя, месяц, год)
-- ✅ Аналитика и статистика по категориям
-- ✅ Временная шкала доходов/расходов
+## Возможности
 
-## 🛠 Технологии
+- регистрация и авторизация пользователей;
+- JWT-аутентификация;
+- персональные категории доходов и расходов;
+- добавление доходов, расходов и произвольных транзакций;
+- фильтрация операций по периоду;
+- аналитика по категориям;
+- временная шкала доходов и расходов;
+- Swagger-документация backend API.
 
-| Компонент | Технологии |
-|-----------|------------|
-| **Frontend** | React, Vite, Tailwind CSS |
-| **Backend** | FastAPI, Python, SQLAlchemy |
-| **База данных** | PostgreSQL 15 |
-| **Контейнеризация** | Docker, Docker Compose |
+## Стек
 
-## 🚀 Быстрый старт
+- **Frontend:** React, Vite, React Router, Axios
+- **Styles:** Tailwind CSS
+- **Backend:** Python, FastAPI, SQLAlchemy, Pydantic
+- **Auth:** JWT, passlib, bcrypt
+- **Database:** PostgreSQL
+- **DevOps:** Docker, Docker Compose, Nginx для production-сборки frontend
+- **Tests:** pytest, httpx
 
-### Требования
+## Структура проекта
 
-- [Docker](https://www.docker.com/) и [Docker Compose](https://docs.docker.com/compose/)
-- Или локально: Python 3.11+, Node.js 20+
-
-### Запуск через Docker (рекомендуется)
-
-```bash
-# Клонировать репозиторий
-git clone <repository-url>
-cd moneytrack
-
-# Запустить все сервисы
-docker-compose up -d --build
-
-# Проверить статус
-docker-compose ps
-```
-
-**Сервисы будут доступны:**
-- Frontend: [http://localhost:3000](http://localhost:3000)
-- Backend API: [http://localhost:8000](http://localhost:8000)
-- Swagger документация: [http://localhost:8000/docs](http://localhost:8000/docs)
-- PostgreSQL: `localhost:5433`
-
-### Локальная разработка
-
-#### Backend
-
-```bash
-cd backend
-
-# Создать виртуальное окружение
-python -m venv venv
-venv\Scripts\activate  # Windows
-source venv/bin/activate  # Linux/Mac
-
-# Установить зависимости
-pip install -r requirements.txt
-
-# Создать .env файл
-cp .env.example .env
-# Отредактировать .env (заменить SECRET_KEY)
-
-# Запустить сервер
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-#### Frontend
-
-```bash
-cd frontend
-
-# Установить зависимости
-npm install
-
-# Запустить dev-сервер
-npm run dev
-```
-
-Frontend будет доступен на [http://localhost:5173](http://localhost:5173)
-
-## 📁 Структура проекта
-
-```
+```text
 moneytrack/
 ├── backend/
 │   ├── app/
-│   │   ├── auth.py          # Аутентификация, JWT
-│   │   ├── database.py      # Подключение к БД
-│   │   ├── main.py          # FastAPI приложение
-│   │   ├── models.py        # SQLAlchemy модели
-│   │   ├── schemas.py       # Pydantic схемы
-│   │   └── test_*.py        # Тесты
+│   │   ├── main.py       # FastAPI-приложение и роуты
+│   │   ├── auth.py       # JWT и хеширование паролей
+│   │   ├── database.py   # Подключение SQLAlchemy
+│   │   ├── models.py     # Модели БД
+│   │   ├── schemas.py    # Pydantic-схемы
+│   │   └── test_*.py     # Тесты
+│   ├── Dockerfile
 │   ├── requirements.txt
-│   └── Dockerfile
+│   └── pytest.ini
 ├── frontend/
 │   ├── src/
-│   ├── package.json
-│   └── Dockerfile
-├── docker-compose.yml
-└── README.md
+│   │   ├── api/          # Axios-клиент
+│   │   ├── components/   # UI-компоненты
+│   │   ├── context/      # AuthContext
+│   │   ├── layout/       # Navbar, Sidebar, Layout
+│   │   └── pages/        # Страницы приложения
+│   ├── Dockerfile
+│   └── package.json
+└── docker-compose.yml
 ```
 
-## 🔐 Настройка безопасности
+## Быстрый запуск через Docker
 
-### Генерация SECRET_KEY
+Требования:
+
+- Docker
+- Docker Compose
+
+Запуск:
 
 ```bash
-python -c "import secrets; print(secrets.token_urlsafe(32))"
+docker compose up -d --build
 ```
 
-### Редактирование .env
+После запуска будут доступны:
 
-Откройте `backend/.env` и установите:
+- frontend: `http://localhost:3000`
+- backend API: `http://localhost:8000`
+- Swagger: `http://localhost:8000/docs`
+- PostgreSQL: `localhost:5433`
+
+Остановить сервисы:
+
+```bash
+docker compose down
+```
+
+Остановить и удалить данные БД:
+
+```bash
+docker compose down -v
+```
+
+## Локальный запуск для разработки
+
+### 1. Подготовить PostgreSQL
+
+Можно использовать базу из Docker Compose:
+
+```bash
+docker compose up -d db
+```
+
+Для подключения backend с локальной машины используйте порт `5433`.
+
+### 2. Настроить backend
+
+Создайте файл `backend/.env`:
 
 ```env
-SECRET_KEY=ваш_секретный_ключ
-DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/moneytrack
+DATABASE_URL=postgresql+psycopg2://postgres:postgres@localhost:5433/moneytrack
+SECRET_KEY=change-this-secret-key
 ```
 
-## 🧪 Тесты
+Установка зависимостей и запуск:
 
 ```bash
 cd backend
-
-# Запустить все тесты
-pytest -v
-
-# Или через скрипт
-python run_tests.bat -v      # Windows
-./run_tests.sh -v            # Linux/Mac
-
-# Запустить конкретный файл
-pytest app/test_auth.py -v
-
-# С покрытием
-pytest --cov=app -v
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-## 📊 API Endpoints
-
-| Метод | Endpoint | Описание |
-|-------|----------|----------|
-| POST | `/register` | Регистрация пользователя |
-| POST | `/token` | Получение JWT токена |
-| GET | `/health` | Проверка статуса |
-| GET | `/categories` | Список категорий |
-| POST | `/categories` | Создать категорию |
-| GET | `/transactions` | Список транзакций |
-| POST | `/transactions` | Создать транзакцию |
-| POST | `/income` | Добавить доход |
-| POST | `/expense` | Добавить расход |
-| GET | `/analytics` | Общая статистика |
-| GET | `/analytics/categories` | Статистика по категориям |
-| GET | `/analytics/timeline` | Временная шкала |
-
-## 🐳 Docker команды
+Для Windows активация окружения:
 
 ```bash
-# Остановить все контейнеры
-docker-compose down
-
-# Пересобрать и запустить
-docker-compose up -d --build
-
-# Посмотреть логи
-docker-compose logs -f
-
-# Остановить и удалить volumes (данные БД)
-docker-compose down -v
+.venv\Scripts\activate
 ```
 
-## 📝 Лицензия
+### 3. Настроить frontend
 
-MIT
+При необходимости создайте `frontend/.env`:
 
----
+```env
+VITE_API_URL=http://localhost:8000
+```
 
-**Разработано с ❤️ для учёта личных финансов**
+Установка зависимостей и запуск:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend в dev-режиме будет доступен по адресу:
+
+```text
+http://localhost:5173
+```
+
+## Тесты
+
+Backend:
+
+```bash
+cd backend
+pytest -v
+```
+
+Через скрипт:
+
+```bash
+./run_tests.sh -v
+```
+
+Отдельный файл:
+
+```bash
+pytest app/test_auth.py -v
+```
+
+## Основные API endpoints
+
+| Метод | Endpoint | Назначение |
+| --- | --- | --- |
+| `GET` | `/health` | Проверка состояния API |
+| `POST` | `/register` | Регистрация пользователя |
+| `POST` | `/token` | Получение JWT-токена |
+| `GET` | `/categories` | Список категорий пользователя |
+| `POST` | `/categories` | Создание категории |
+| `DELETE` | `/categories/{id}` | Удаление категории |
+| `GET` | `/transactions` | Список транзакций |
+| `POST` | `/transactions` | Создание транзакции |
+| `POST` | `/income` | Быстрое добавление дохода |
+| `POST` | `/expense` | Быстрое добавление расхода |
+| `GET` | `/analytics` | Общая аналитика |
+| `GET` | `/analytics/categories` | Аналитика по категориям |
+| `GET` | `/analytics/timeline` | Данные для временной шкалы |
+
+## Полезные команды
+
+```bash
+docker compose ps
+docker compose logs -f backend
+docker compose logs -f frontend
+docker compose up -d --build
+```
+
+## Примечания
+
+- Backend автоматически создает таблицы через SQLAlchemy при старте приложения.
+- При регистрации пользователя создается набор базовых категорий.
+- Для production обязательно замените `SECRET_KEY`.
+- Файлы `.env` не должны попадать в git.
